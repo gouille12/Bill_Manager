@@ -4,6 +4,7 @@
 import tkinter as tk
 import sys
 import DatabaseInteraction as DBinter
+import tkinter.ttk as ttk
 
 class InterfaceBill:
 
@@ -70,10 +71,11 @@ class InterfaceBill:
 		self.top_add_bill = tk.Toplevel(self.root)
 		self.top_add_bill.title("Ajouter une facture")
 
+		self.paid = 0
 		self.label_top_add_name = tk.Label(self.top_add_bill, text = "Nom :")
 		self.entry_top_add_name = tk.Entry(self.top_add_bill)
 		self.label_top_add_category = tk.Label(self.top_add_bill, text = "Catégorie :")
-		self.TEMP_label_category = tk.Label(self.top_add_bill, text = "MENU DÉROULANT ICI")
+		self.combobox_categories = ttk.Combobox(self.top_add_bill, height = 4, state = "readonly", values = self.categories_management.get_all_categories())
 		self.label_top_add_init_date = tk.Label(self.top_add_bill, text = "Date d'émission :")
 		self.entry_top_add_init_date = tk.Entry(self.top_add_bill)
 		self.label_top_add_due_date = tk.Label(self.top_add_bill, text = "Daté d'échéance :")
@@ -81,17 +83,17 @@ class InterfaceBill:
 		self.label_top_add_price = tk.Label(self.top_add_bill, text = "Prix :")
 		self.entry_top_add_price = tk.Entry(self.top_add_bill)
 		self.label_top_add_paid = tk.Label(self.top_add_bill, text = "Payée? :")
-		self.TEMP_label_paid = tk.Label(self.top_add_bill, text = "CASE COCHABLE ICI")
+		self.checkbutton_paid = tk.Checkbutton(self.top_add_bill, variable = self.paid)
 		self.label_top_add_note = tk.Label(self.top_add_bill, text = "Notes :")
-		self.TEMP_label_notes = tk.Label(self.top_add_bill, text = "TEXTE ICI")
+		self.text_top_add_note = tk.Text(self.top_add_bill)
 
 		self.labels_top_add = [self.label_top_add_name, self.label_top_add_category,
 			self.label_top_add_init_date, self.label_top_add_due_date,
 			self.label_top_add_price, self.label_top_add_paid, self.label_top_add_note]
 
-		self.non_labels_top_add = [self.entry_top_add_name, self.TEMP_label_category, 
+		self.non_labels_top_add = [self.entry_top_add_name, self.combobox_categories, 
 			self.entry_top_add_init_date, self.entry_top_add_due_date,
-			self.entry_top_add_price, self.TEMP_label_paid, self.TEMP_label_notes]
+			self.entry_top_add_price, self.checkbutton_paid, self.text_top_add_note]
 
 		for i in range(len(self.labels_top_add)):
 			self.labels_top_add[i].grid(row = i, column = 0)

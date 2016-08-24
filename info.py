@@ -60,9 +60,6 @@ Classes : GUI, Facture
 	c. Beau
 	d.
 9. toplevel add
-	a. menu déroulant catégorie
-	b. bouton payé
-	c. note
 	d. Mettre ca beau
 	e. Grosseur
 	f. endroit dans l'écran
@@ -81,7 +78,10 @@ Classes : GUI, Facture
 13. Base de données
 	e. Créer main base de données
 	f.
-PROCHAINE ETAPE : Faire menu déroulant
-ENSUITE : bouton payé
-ENSUITE : Endroit note
+14. Filtrage
+	a.
+
+PROCHAINE ETAPE : Creer main base de données
+ENSUITE : Initier connexion a la main
+ENSUITE : 
 """
