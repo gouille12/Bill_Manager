@@ -49,7 +49,6 @@ Classes : GUI, Facture
 	b. Bouton supprimer
 	c. Permettre le double click pour modifier
 	d. TREEVIEW TTK.TKINTER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	e. Faire un GitHub
 	f.
 5. Permettre le resizing
 6. Commande des options du menu
@@ -78,9 +77,11 @@ Classes : GUI, Facture
 	i. Mettre ca beau
 	j. Gestion erreur bouton supprimer
 	k.
-11. Faire des tests dans un fichier à part
-12.
-PROCHAINE ETAPE : Faire un github
-ENSUITE : command button insérer categorie
-ENSUITE : command supprimer catégorie (sans gestion d'erreur)
+11. Faire tests dans un fichier à part
+13. Base de données
+	e. Créer main base de données
+	f.
+PROCHAINE ETAPE : Faire menu déroulant
+ENSUITE : bouton payé
+ENSUITE : Endroit note
 """

@@ -120,7 +120,7 @@ class InterfaceBill:
 
 		self.frame_top_buttons_categories = tk.Frame(self.top_menu_categories, width = self.width_root*0.70)
 		self.button_categories_add = tk.Button(self.frame_top_buttons_categories, text = "Ajouter", padx = 6, pady = 2, command = self.command_add_category)
-		self.button_categories_delete = tk.Button(self.frame_top_buttons_categories, text = "Supprimer", padx = 6, pady = 2)
+		self.button_categories_delete = tk.Button(self.frame_top_buttons_categories, text = "Supprimer", padx = 6, pady = 2, command = self.command_delete_category)
 		self.entry_top_categories = tk.Entry(self.frame_top_buttons_categories)
 
 		self.frame_top_buttons_categories.place(anchor = "se", relx = 0.75/2, rely = 0.95)
@@ -128,20 +128,33 @@ class InterfaceBill:
 		self.button_categories_delete.pack(side = "right")
 		self.entry_top_categories.pack(side = "right", expand = 1, fill = "both")
 
+		self.update_categories_listbox()
+
 	def command_add_category(self):
 
 		self.category_added = self.entry_top_categories.get()
 		self.entry_top_categories.delete(0, "end")
 
-		self.top_categories_listbox.insert("end", self.category_added)
+		self.categories_management.add_category(self.category_added)
+		self.update_categories_listbox()
 
-		# add access
-		# sort --> faire une liste, la sorter, et l'entrer dans la listbox
+	def update_categories_listbox(self):
 
-	#def command_delete_category(self):
+		self.top_categories_listbox.delete(0, "end")
 
-		# del listbox
-		# del access
+		self.all_categories = self.categories_management.get_all_categories()
+		for element in self.all_categories:
+			self.top_categories_listbox.insert("end", element)
+
+	def command_delete_category(self):
+
+		self.category_to_del = self.top_categories_listbox.get("active")
+
+		self.categories_management.delete_category(self.category_to_del)
+
+		self.update_categories_listbox()
+
+
 
 
 
