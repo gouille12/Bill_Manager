@@ -31,25 +31,16 @@
 7. Raccourcis clavier
 
 
-1. Faire l'apparence de base : menu en haut, background vide.
-2. Faire un template MS Access
-3. Essayer d'afficher une requete
-4. Essayer de modifier la base de données
-5. Essayer d'ajouter sur MS access
-6. Afficher un ajout
-7. Afficher les modifications qu'on fait sur une facture
-8. Compléter
-9. Tests
-
-
 Classes : GUI, Facture
 
 1. Main
 	a. Scrollbar
 	b. Bouton supprimer
 	c. Permettre le double click pour modifier
-	d. TREEVIEW TTK.TKINTER!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	f.
+	f. paid = oui/non
+	g. del bill
+	h. modify bill
+	i.
 5. Permettre le resizing
 6. Commande des options du menu
 	c. Stats
@@ -63,8 +54,7 @@ Classes : GUI, Facture
 	d. Mettre ca beau
 	e. Grosseur
 	f. endroit dans l'écran
-	i. command button confirm
-	j.
+	k.
 10. top_categories
 	a. Grosseur
 	b. Endroit dans l'écran
@@ -76,12 +66,22 @@ Classes : GUI, Facture
 	k.
 11. Faire tests dans un fichier à part
 13. Base de données
-	e. Créer main base de données
-	f.
+	f. del bill
+	g. modify bill
+	h.
 14. Filtrage
-	a.
+	a. clickage des headings pour sorter
+	b. permettre de sorter asc, des
+	c.
+15. Passer à ttk?
+16. Erreurs
+	a. Lister toutes les erreurs possibles
+	b. 
+17. paid -> 1 dans la database
 
-PROCHAINE ETAPE : Creer main base de données
-ENSUITE : Initier connexion a la main
-ENSUITE : 
+PROCHAINE ETAPE : del_bill DB à terminer
+ENSUITE : del bill gui
+ENSUITE : modify db
+ENSUITE : modify GUI
+ENSUITE : clickage des heading ORDER BY x".format(init_date, due_date, etc.)
 """

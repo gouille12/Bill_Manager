@@ -5,13 +5,16 @@ import tkinter as tk
 import sys
 import DatabaseInteraction as DBinter
 import tkinter.ttk as ttk
+import datetime
+import decimal
 
 class InterfaceBill:
 
 	def __init__(self, root):
 
 		self.categories_management = DBinter.CategoriesManagement()
-		
+		self.bill_management = DBinter.BillsManagement()
+
 		self.root = root
 		self.width_root, self.height_root = 1000, 650
 		self.root.geometry("{}x{}+183+20".format(self.width_root, self.height_root))
@@ -26,10 +29,29 @@ class InterfaceBill:
 		self.canvas_background.create_image(0, 0, image = self.image_background, anchor = "nw")
 
 		self.frame_main = tk.Frame(self.root, width = self.width_root*0.9, height = self.height_root*0.85)
-		self.listbox_main = tk.Listbox(self.frame_main, selectmode = "extended", bg = "#82916F", highlightthickness = 0, borderwidth = 1, font = ("Arial", 11), selectbackground = "#284145")
 		self.button_add_bill = tk.Button(self.root, text = "Ajouter", bg = "#284145", relief = "flat", padx = 6, pady = 2, font = ("Arial", 9, "bold"), command = self.command_button_add)
 		self.button_modify_bill = tk.Button(self.root, text = "Modifier", bg = "#284145", relief = "flat", padx = 6, pady = 2, font = ("Arial", 9, "bold"))
 		
+		self.treeview_main = ttk.Treeview(self.frame_main)
+		self.width_column = int((self.width_root*0.9)/20)
+		self.treeview_main["columns"] = ("bill_name", "category", "bill_date", "due_date", "price", "paid", "notes")
+		self.treeview_main["show"] = "headings"
+		self.treeview_main.column("bill_name", width = self.width_column*2)
+		self.treeview_main.column("category", width = self.width_column*2)
+		self.treeview_main.column("bill_date", width = self.width_column)
+		self.treeview_main.column("due_date", width =self.width_column)
+		self.treeview_main.column("price", width = self.width_column)
+		self.treeview_main.column("paid", width = self.width_column)
+		self.treeview_main.column("notes", width =self.width_column*3)
+
+		self.treeview_main.heading("bill_name", text = "Nom")
+		self.treeview_main.heading("category", text  = "Categorie")
+		self.treeview_main.heading("bill_date", text = "Date d'émission")
+		self.treeview_main.heading("due_date", text = "Date d'échéance")
+		self.treeview_main.heading("price", text = "Montant")
+		self.treeview_main.heading("paid", text = "Statut")
+		self.treeview_main.heading("notes", text = "Notes")
+
 		self.menu_bar = tk.Menu(self.root)
 		self.file_menu = tk.Menu(self.menu_bar, tearoff = 0)
 		self.file_menu.add_command(label = "Statistiques")
@@ -49,11 +71,11 @@ class InterfaceBill:
 
 		self.frame_main.place(anchor = "nw", relx = 0.05, rely = 0.05)
 		self.frame_main.pack_propagate(0)
-		self.listbox_main.insert("end", "allokjbdksjbck")
-		self.listbox_main.insert("end", "bitchezzzz")
-		self.listbox_main.pack(fill = "both", expand = 1)			
+		self.treeview_main.pack(fill = "both", expand = 1)			
 		self.button_add_bill.place(anchor = "se", relx = 0.95, rely = 0.95)
 		self.button_modify_bill.place(anchor = "se", relx = 0.85, rely = 0.95)
+
+		self.update_bills()
 
 	def command_menu_about(self):
 
@@ -99,20 +121,50 @@ class InterfaceBill:
 			self.labels_top_add[i].grid(row = i, column = 0)
 			self.non_labels_top_add[i].grid(row = i, column = 1)
 
-
-		self.button_top_add_confirm = tk.Button(self.top_add_bill, text = "Confirmer")
+		self.button_top_add_confirm = tk.Button(self.top_add_bill, text = "Confirmer", command = self.command_confirm_add)
 		self.button_top_add_cancel = tk.Button(self.top_add_bill, text = "Annuler", command = self.top_add_bill.destroy)
 		self.button_top_add_confirm.grid(row = 8, column = 4)
 		self.button_top_add_cancel.grid(row = 8, column = 3)
 
+	def command_confirm_add(self):
 
-		#add dans listbox
-		#upload dans la database
+		self.info_bill_to_add = []
+		for element in self.non_labels_top_add:
+			if element == self.checkbutton_paid:
+				self.info_bill_to_add.append(self.paid)
+			elif element == self.text_top_add_note:
+				self.info_bill_to_add.append(self.text_top_add_note.get(1.0, "end"))
+			else:	
+				self.info_bill_to_add.append(element.get())
+
+		self.bill_management.add_bill(self.info_bill_to_add[0],
+									self.info_bill_to_add[1],
+									self.info_bill_to_add[2],
+									self.info_bill_to_add[3],
+									self.info_bill_to_add[4],
+									self.info_bill_to_add[5],
+									self.info_bill_to_add[6])
+
+		self.update_bills()
+		self.top_add_bill.destroy()
+
+	def update_bills(self):
+
+		self.treeview_main.delete(*self.treeview_main.get_children())
+		self.all_bills = self.bill_management.get_all_bills()
+		for element in self.all_bills:
+			val = (element["bill_name"],
+				element["category"],
+				element["init_date"],
+				element["due_date"],
+				element["price"],
+				element["paid"],
+				element["notes"])
+			self.treeview_main.insert("", 0, values = val)
 
 
 	def command_menu_categories(self):
 
-		#insert categories deja crees
 		self.top_menu_categories = tk.Toplevel(self.root, height = self.height_root*0.75, width = self.width_root*0.75)
 		self.frame_top_listbox = tk.Frame(self.top_menu_categories, height = self.height_root*0.6, width = self.width_root*0.70)
 		self.frame_top_listbox.propagate(0)
@@ -151,18 +203,16 @@ class InterfaceBill:
 	def command_delete_category(self):
 
 		self.category_to_del = self.top_categories_listbox.get("active")
-
 		self.categories_management.delete_category(self.category_to_del)
-
 		self.update_categories_listbox()
 
 
 
+if __name__ == "__main__":
 
-
-
-
-
+	root = tk.Tk()
+	app = InterfaceBill(root)
+	root.mainloop()
 
 
 	#def command_button_modify(self):
@@ -174,11 +224,3 @@ class InterfaceBill:
 		#resize
 		#get new parametres
 		#actualise
-
-
-
-if __name__ == "__main__":
-
-	root = tk.Tk()
-	app = InterfaceBill(root)
-	root.mainloop()
