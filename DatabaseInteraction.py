@@ -45,7 +45,7 @@ class BillsManagement:
 			cursor.execute(self.sql)
 			return cursor.fetchall()
 
-	def delete_bill(self, bill_name, init_date, due_date, price): ####################################
+	def delete_bill(self, bill_name, init_date, due_date, price):
 
 		self.bill_name = bill_name
 		self.init_date = init_date
@@ -54,8 +54,13 @@ class BillsManagement:
 
 		with self.connection.cursor() as cursor:
 
-			self.sql = "DELETE FROM `bills` WHERE (`bill_name`, `init_date`, `due_date`,`price` = %s, %s, %s, %s)"
+			self.sql = """DELETE FROM `bills` 
+						WHERE (`bill_name`= %s)
+						AND (`init_date` = %s)
+						AND (`due_date` = %s)
+						AND (`price` = %s)"""
 			cursor.execute(self.sql, (self.bill_name, self.init_date, self.due_date, self.price))
+
 
 		self.connection.commit()
 
@@ -123,7 +128,8 @@ if __name__ == "__main__":
 
 	bill_test = BillsManagement()
 	#bill_test.add_bill('bitchezz', 'homo', 20160514, 20161020, 253.20, 0, 'test_4')
-	print(bill_test.get_all_bills())
+	#bill_test.delete_bill('bitchezz', 20160514, 20161020, 253.20)
+	#print(bill_test.get_all_bills())
 	bill_test.close_connection()
 
 

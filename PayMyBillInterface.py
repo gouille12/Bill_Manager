@@ -31,7 +31,8 @@ class InterfaceBill:
 		self.frame_main = tk.Frame(self.root, width = self.width_root*0.9, height = self.height_root*0.85)
 		self.button_add_bill = tk.Button(self.root, text = "Ajouter", bg = "#284145", relief = "flat", padx = 6, pady = 2, font = ("Arial", 9, "bold"), command = self.command_button_add)
 		self.button_modify_bill = tk.Button(self.root, text = "Modifier", bg = "#284145", relief = "flat", padx = 6, pady = 2, font = ("Arial", 9, "bold"))
-		
+		self.button_del_bill = tk.Button(self.root, text = "Supprimer", bg = "#284145", relief = "flat", padx = 6, pady = 2, font = ("Arial", 9, "bold"), command = self.command_button_del)
+
 		self.treeview_main = ttk.Treeview(self.frame_main)
 		self.width_column = int((self.width_root*0.9)/20)
 		self.treeview_main["columns"] = ("bill_name", "category", "bill_date", "due_date", "price", "paid", "notes")
@@ -51,6 +52,7 @@ class InterfaceBill:
 		self.treeview_main.heading("price", text = "Montant")
 		self.treeview_main.heading("paid", text = "Statut")
 		self.treeview_main.heading("notes", text = "Notes")
+		
 
 		self.menu_bar = tk.Menu(self.root)
 		self.file_menu = tk.Menu(self.menu_bar, tearoff = 0)
@@ -65,8 +67,6 @@ class InterfaceBill:
 
 		self.bill_main_init()
 
-
-
 	def bill_main_init(self):
 
 		self.frame_main.place(anchor = "nw", relx = 0.05, rely = 0.05)
@@ -74,8 +74,16 @@ class InterfaceBill:
 		self.treeview_main.pack(fill = "both", expand = 1)			
 		self.button_add_bill.place(anchor = "se", relx = 0.95, rely = 0.95)
 		self.button_modify_bill.place(anchor = "se", relx = 0.85, rely = 0.95)
+		self.button_del_bill.place(anchor = "se", relx = 0.75, rely = 0.95)
 
 		self.update_bills()
+
+	def select_item_tree(self):
+	
+		for item in self.treeview_main.selection():
+			self.item_text = self.treeview_main.item(item)
+			self.values = self.item_text["values"]
+			return self.values
 
 	def command_menu_about(self):
 
@@ -88,6 +96,20 @@ class InterfaceBill:
 		self.button_top_about.pack(side = "top")
 
 
+
+
+
+
+	def command_button_del(self):
+		
+		self.bill_to_del = self.select_item_tree()
+		self.bill_management.delete_bill(self.bill_to_del[0],
+										self.bill_to_del[2],
+										self.bill_to_del[3],
+										self.bill_to_del[4])
+
+		self.update_bills()
+		
 	def command_button_add(self):
 		
 		self.top_add_bill = tk.Toplevel(self.root)
@@ -161,6 +183,15 @@ class InterfaceBill:
 				element["paid"],
 				element["notes"])
 			self.treeview_main.insert("", 0, values = val)
+
+
+
+
+
+
+
+
+
 
 
 	def command_menu_categories(self):

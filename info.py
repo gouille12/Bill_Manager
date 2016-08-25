@@ -35,10 +35,8 @@ Classes : GUI, Facture
 
 1. Main
 	a. Scrollbar
-	b. Bouton supprimer
 	c. Permettre le double click pour modifier
 	f. paid = oui/non
-	g. del bill
 	h. modify bill
 	i.
 5. Permettre le resizing
@@ -66,7 +64,6 @@ Classes : GUI, Facture
 	k.
 11. Faire tests dans un fichier à part
 13. Base de données
-	f. del bill
 	g. modify bill
 	h.
 14. Filtrage
@@ -79,8 +76,8 @@ Classes : GUI, Facture
 	b. 
 17. paid -> 1 dans la database
 
-PROCHAINE ETAPE : del_bill DB à terminer
-ENSUITE : del bill gui
+PROCHAINE ETAPE : 
+ENSUITE : 
 ENSUITE : modify db
 ENSUITE : modify GUI
 ENSUITE : clickage des heading ORDER BY x".format(init_date, due_date, etc.)
