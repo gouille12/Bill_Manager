@@ -1,37 +1,5 @@
-"""Gestion de facture
-
-1. Faire un template MS access des infos
-	a. Nom
-	b. Catégorie
-	c. date d'émission
-	d. date de paiement ou date prévue de paiement
-		i. petit calendrier serait nice
-		ii. permettre de mettre une date pas standard, ex. hiver 2017
-	e. prix
-	f. payée?
-	g. note
-2. Permettre d'ajouter
-	a. facture
-	b. catégorie
-	c. dépenses qui ne sont pas des factures
-3. Permettre d'archiver les factures déjà payées
-4. Facilement pouvoir filtrer les factures (bcp de filtre possible)
-5. Apparence nice
-	a. fond noir
-	b. foreground gris
-	c. les factures sont à l'horizontale comme sur itunes
-	d. Mettre un barre de menu en haut avec des options
-		i. quitter
-		ii. stats
-		iii. ajouter...
-		iv. supprimer...
-		v. copier
-		vi. coller
-6. Permettre de pouvoir sélectionner plusieurs factures à supprimer, à modifier, etc.
-7. Raccourcis clavier
-
-
-Classes : GUI, Facture
+"""
+Gestion de facture
 
 1. Main
 	a. Scrollbar
@@ -60,12 +28,11 @@ Classes : GUI, Facture
 	g. command supprimer
 	h. Distribution widgets du bas
 	i. Mettre ca beau
-	j. Gestion erreur bouton supprimer
 	k.
 11. Faire tests dans un fichier à part
 13. Base de données
-	g. modify bill
-	h.
+	h. Optimiser modify
+	i.
 14. Filtrage
 	a. clickage des headings pour sorter
 	b. permettre de sorter asc, des
@@ -75,10 +42,19 @@ Classes : GUI, Facture
 	a. Lister toutes les erreurs possibles
 	b. 
 17. paid -> 1 dans la database
+18. Raccourcis clavier
+	a. Enter pour les boutons confirmer
+	b. Escape pour quitter
+	c. ctrl-a pour ajouter
+	d. ctrl-d pour supprimer
+	e.
+19. Permettre de pouvoir selectionner plusieurs facture
+20. Système d'archivage au lieu de supprimer
+21. Close connection
+22. 
 
 PROCHAINE ETAPE : 
-ENSUITE : 
-ENSUITE : modify db
-ENSUITE : modify GUI
 ENSUITE : clickage des heading ORDER BY x".format(init_date, due_date, etc.)
+ENSUITE : Filtres (menu déroulant avec 4-5 options possibles)
+ENSUITE : Archivage
 """

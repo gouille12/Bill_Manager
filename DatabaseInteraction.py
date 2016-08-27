@@ -45,24 +45,63 @@ class BillsManagement:
 			cursor.execute(self.sql)
 			return cursor.fetchall()
 
-	def delete_bill(self, bill_name, init_date, due_date, price):
+	def delete_bill(self, bill_to_del_id):
 
-		self.bill_name = bill_name
-		self.init_date = init_date
-		self.due_date = due_date
-		self.price = price
+		self.bill_to_del_id = bill_to_del_id
 
 		with self.connection.cursor() as cursor:
 
 			self.sql = """DELETE FROM `bills` 
-						WHERE (`bill_name`= %s)
-						AND (`init_date` = %s)
-						AND (`due_date` = %s)
-						AND (`price` = %s)"""
-			cursor.execute(self.sql, (self.bill_name, self.init_date, self.due_date, self.price))
-
+						WHERE (`id` = %s)"""
+			cursor.execute(self.sql, self.bill_to_del_id)
 
 		self.connection.commit()
+
+	def modify_bill(self, bill_to_mod_id, new_bill_name, new_category, new_init_date, new_due_date, new_price, new_paid, new_notes):
+
+		self.bill_to_mod_id = bill_to_mod_id
+		self.new_info = new_bill_name, new_category, new_init_date, new_due_date, new_price, new_paid, new_notes
+		with self.connection.cursor() as cursor:
+
+			self.sql = """UPDATE `bills` 
+						SET `bill_name`= %s, `category` = %s, `init_date` = %s, `due_date` = %s, `price` = %s, `paid` = %s, `notes` = %s 
+						WHERE (`id` = %s)"""
+			cursor.execute(self.sql, (self.new_info[0],
+									self.new_info[1],
+									self.new_info[2],
+									self.new_info[3],
+									self.new_info[4],
+									self.new_info[5],
+									self.new_info[6],
+									self.bill_to_mod_id))
+
+		self.connection.commit()
+
+		
+	def get_bill_id(self, bill_info):
+
+		self.bill_info = bill_info
+
+		with self.connection.cursor() as cursor:
+
+			self.sql = """SELECT `id`
+						FROM `bills`
+						WHERE (`bill_name` = %s)
+						AND (`category` = %s)
+						AND (`init_date` = %s)
+						AND (`due_date` = %s)
+						AND (`price` = %s)
+						AND (`paid` = %s)
+						AND (`notes` = %s)"""
+			cursor.execute(self.sql, (self.bill_info[0],
+									self.bill_info[1],
+									self.bill_info[2],
+									self.bill_info[3],
+									self.bill_info[4],
+									self.bill_info[5],
+									self.bill_info[6]))
+
+			return cursor.fetchone()['id']
 
 		
 class CategoriesManagement:
@@ -127,9 +166,12 @@ if __name__ == "__main__":
 	test.close_connection()
 
 	bill_test = BillsManagement()
-	#bill_test.add_bill('bitchezz', 'homo', 20160514, 20161020, 253.20, 0, 'test_4')
-	#bill_test.delete_bill('bitchezz', 20160514, 20161020, 253.20)
+	#bill_test.add_bill('rororo', 'lolo', 20160514, 20161020, 253.20, 0, 'test_4')
+	#x = bill_test.get_bill_id(['rororo', 'lolo', 20160514, 20161020, 253.20, 0, 'test_4'])	
+	#print(x)
+	#bill_test.delete_bill(x)
 	#print(bill_test.get_all_bills())
+	#bill_test.modify_bill(x, 'bobobo', 'nonodo', 20160414, 20160920, 243.20, 1, 'tes_4')
 	bill_test.close_connection()
 
 

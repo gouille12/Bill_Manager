@@ -30,7 +30,7 @@ class InterfaceBill:
 
 		self.frame_main = tk.Frame(self.root, width = self.width_root*0.9, height = self.height_root*0.85)
 		self.button_add_bill = tk.Button(self.root, text = "Ajouter", bg = "#284145", relief = "flat", padx = 6, pady = 2, font = ("Arial", 9, "bold"), command = self.command_button_add)
-		self.button_modify_bill = tk.Button(self.root, text = "Modifier", bg = "#284145", relief = "flat", padx = 6, pady = 2, font = ("Arial", 9, "bold"))
+		self.button_modify_bill = tk.Button(self.root, text = "Modifier", bg = "#284145", relief = "flat", padx = 6, pady = 2, font = ("Arial", 9, "bold"), command = self.command_button_mod)
 		self.button_del_bill = tk.Button(self.root, text = "Supprimer", bg = "#284145", relief = "flat", padx = 6, pady = 2, font = ("Arial", 9, "bold"), command = self.command_button_del)
 
 		self.treeview_main = ttk.Treeview(self.frame_main)
@@ -102,14 +102,26 @@ class InterfaceBill:
 
 	def command_button_del(self):
 		
-		self.bill_to_del = self.select_item_tree()
-		self.bill_management.delete_bill(self.bill_to_del[0],
-										self.bill_to_del[2],
-										self.bill_to_del[3],
-										self.bill_to_del[4])
-
+		self.bill_to_del = self.bill_management.get_bill_id(self.select_item_tree())
+		self.bill_management.delete_bill(self.bill_to_del)
 		self.update_bills()
-		
+	
+	def command_button_mod(self):
+
+		self.bill_to_mod = self.select_item_tree()
+		self.command_button_add()
+
+		for i in range(len(self.non_labels_top_add)):
+			if type(self.non_labels_top_add[i]) is type(tk.Entry()):
+				self.non_labels_top_add[i].insert("end", self.bill_to_mod[i])
+			elif type(self.non_labels_top_add[i]) is type(ttk.Combobox()):
+				self.non_labels_top_add[i].set(self.bill_to_mod[i])
+			elif type(self.non_labels_top_add[i]) is type(tk.Text()):
+				self.non_labels_top_add[i].insert(1.0, self.bill_to_mod[i])
+		#########
+		self.button_top_add_confirm.config(command = lambda: self.command_confirm_add(self.bill_to_mod))
+
+
 	def command_button_add(self):
 		
 		self.top_add_bill = tk.Toplevel(self.root)
@@ -148,8 +160,19 @@ class InterfaceBill:
 		self.button_top_add_confirm.grid(row = 8, column = 4)
 		self.button_top_add_cancel.grid(row = 8, column = 3)
 
-	def command_confirm_add(self):
+	def command_confirm_add(self, info_bill_to_mod = None):
 
+		self.info_bill_to_mod = info_bill_to_mod
+		if self.info_bill_to_mod is not None:
+			self.bill_management.delete_bill(self.info_bill_to_mod[0],
+											self.info_bill_to_mod[1],
+											self.info_bill_to_mod[2],
+											self.info_bill_to_mod[3],
+											self.info_bill_to_mod[4],
+											self.info_bill_to_mod[5],
+											self.info_bill_to_mod[6])
+
+		self.button_top_add_confirm.config(command = self.command_confirm_add)
 		self.info_bill_to_add = []
 		for element in self.non_labels_top_add:
 			if element == self.checkbutton_paid:
