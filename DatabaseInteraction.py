@@ -18,20 +18,14 @@ class BillsManagement:
 
 		self.connection.close()
 
-	def add_bill(self, bill_name, category, bill_date, due_date, price, paid, notes):
+	def add_bill(self, bill_info):
 
-		self.bill_name = bill_name
-		self.category = category
-		self.bill_date = bill_date
-		self.due_date = due_date
-		self.price = price
-		self.paid = paid
-		self.notes = notes
+		self.bill_info = bill_info
 
 		with self.connection.cursor() as cursor:
 
 			self.sql = "INSERT INTO `bills` VALUES (NULL, %s, %s, %s, %s, %s, %s, %s)"
-			cursor.execute(self.sql, (self.bill_name, self.category, self.bill_date, self.due_date, self.price, self.paid, self.notes))
+			cursor.execute(self.sql, tuple(self.bill_info))
 
 		self.connection.commit()
 
@@ -57,23 +51,17 @@ class BillsManagement:
 
 		self.connection.commit()
 
-	def modify_bill(self, bill_to_mod_id, new_bill_name, new_category, new_init_date, new_due_date, new_price, new_paid, new_notes):
+	def modify_bill(self, bill_to_mod_id, new_info):
 
 		self.bill_to_mod_id = bill_to_mod_id
-		self.new_info = new_bill_name, new_category, new_init_date, new_due_date, new_price, new_paid, new_notes
+		self.new_info = new_info
+		self.new_info.append(self.bill_to_mod_id)
 		with self.connection.cursor() as cursor:
 
 			self.sql = """UPDATE `bills` 
 						SET `bill_name`= %s, `category` = %s, `init_date` = %s, `due_date` = %s, `price` = %s, `paid` = %s, `notes` = %s 
 						WHERE (`id` = %s)"""
-			cursor.execute(self.sql, (self.new_info[0],
-									self.new_info[1],
-									self.new_info[2],
-									self.new_info[3],
-									self.new_info[4],
-									self.new_info[5],
-									self.new_info[6],
-									self.bill_to_mod_id))
+			cursor.execute(self.sql, (tuple(self.new_info)))
 
 		self.connection.commit()
 
@@ -93,13 +81,7 @@ class BillsManagement:
 						AND (`price` = %s)
 						AND (`paid` = %s)
 						AND (`notes` = %s)"""
-			cursor.execute(self.sql, (self.bill_info[0],
-									self.bill_info[1],
-									self.bill_info[2],
-									self.bill_info[3],
-									self.bill_info[4],
-									self.bill_info[5],
-									self.bill_info[6]))
+			cursor.execute(self.sql, (tuple(self.bill_info)))
 
 			return cursor.fetchone()['id']
 
@@ -166,12 +148,12 @@ if __name__ == "__main__":
 	test.close_connection()
 
 	bill_test = BillsManagement()
-	#bill_test.add_bill('rororo', 'lolo', 20160514, 20161020, 253.20, 0, 'test_4')
+	#bill_test.add_bill(['rororo', 'lolo', 20160514, 20161020, 253.20, 0, 'test_4'])
 	#x = bill_test.get_bill_id(['rororo', 'lolo', 20160514, 20161020, 253.20, 0, 'test_4'])	
 	#print(x)
 	#bill_test.delete_bill(x)
 	#print(bill_test.get_all_bills())
-	#bill_test.modify_bill(x, 'bobobo', 'nonodo', 20160414, 20160920, 243.20, 1, 'tes_4')
+	#bill_test.modify_bill(x, ['bobobo', 'nonodo', 20160414, 20160920, 243.20, 1, 'tes_4'])
 	bill_test.close_connection()
 
 

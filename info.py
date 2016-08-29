@@ -53,7 +53,7 @@ Gestion de facture
 21. Close connection
 22. 
 
-PROCHAINE ETAPE : 
+PROCHAINE ETAPE : mod gui
 ENSUITE : clickage des heading ORDER BY x".format(init_date, due_date, etc.)
 ENSUITE : Filtres (menu déroulant avec 4-5 options possibles)
 ENSUITE : Archivage

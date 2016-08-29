@@ -110,6 +110,7 @@ class InterfaceBill:
 
 		self.bill_to_mod = self.select_item_tree()
 		self.command_button_add()
+		self.id_bill_mod = self.bill_management.get_bill_id(self.bill_to_mod)
 
 		for i in range(len(self.non_labels_top_add)):
 			if type(self.non_labels_top_add[i]) is type(tk.Entry()):
@@ -118,8 +119,8 @@ class InterfaceBill:
 				self.non_labels_top_add[i].set(self.bill_to_mod[i])
 			elif type(self.non_labels_top_add[i]) is type(tk.Text()):
 				self.non_labels_top_add[i].insert(1.0, self.bill_to_mod[i])
-		#########
-		self.button_top_add_confirm.config(command = lambda: self.command_confirm_add(self.bill_to_mod))
+		
+		self.button_top_add_confirm.config(command = lambda: self.command_confirm_add(mod = True))
 
 
 	def command_button_add(self):
@@ -160,19 +161,9 @@ class InterfaceBill:
 		self.button_top_add_confirm.grid(row = 8, column = 4)
 		self.button_top_add_cancel.grid(row = 8, column = 3)
 
-	def command_confirm_add(self, info_bill_to_mod = None):
+	def command_confirm_add(self, mod = False):
 
-		self.info_bill_to_mod = info_bill_to_mod
-		if self.info_bill_to_mod is not None:
-			self.bill_management.delete_bill(self.info_bill_to_mod[0],
-											self.info_bill_to_mod[1],
-											self.info_bill_to_mod[2],
-											self.info_bill_to_mod[3],
-											self.info_bill_to_mod[4],
-											self.info_bill_to_mod[5],
-											self.info_bill_to_mod[6])
 
-		self.button_top_add_confirm.config(command = self.command_confirm_add)
 		self.info_bill_to_add = []
 		for element in self.non_labels_top_add:
 			if element == self.checkbutton_paid:
@@ -181,16 +172,14 @@ class InterfaceBill:
 				self.info_bill_to_add.append(self.text_top_add_note.get(1.0, "end"))
 			else:	
 				self.info_bill_to_add.append(element.get())
-
-		self.bill_management.add_bill(self.info_bill_to_add[0],
-									self.info_bill_to_add[1],
-									self.info_bill_to_add[2],
-									self.info_bill_to_add[3],
-									self.info_bill_to_add[4],
-									self.info_bill_to_add[5],
-									self.info_bill_to_add[6])
+		if mod is True:
+			self.bill_management.modify_bill(self.id_bill_mod, self.info_bill_to_add)
+			self.button_top_add_confirm.config(command = lambda: self.command_confirm_add(mod = False))
+		else:
+			self.bill_management.add_bill(self.info_bill_to_add)
 
 		self.update_bills()
+
 		self.top_add_bill.destroy()
 
 	def update_bills(self):
