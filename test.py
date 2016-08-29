@@ -1,4 +1,15 @@
-a = [1,2,3,4,5,6,7,8,9]
-b = tuple(a)
-print(a)
-print(b)
+import tkinter as tk
+import tkinter.ttk as ttk
+
+root = tk.Tk()
+
+style = ttk.Style()
+style.configure("BW.TLabel", foreground="black", background="white")
+
+l1 = ttk.Label(root, text="Test", style="BW.TLabel")
+l2 = ttk.Label(root, text="Test", style="BW.TLabel")
+
+l1.pack()
+l2.pack()
+
+root.mainloop()

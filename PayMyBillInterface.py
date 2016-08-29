@@ -9,8 +9,8 @@ import datetime
 import decimal
 
 class InterfaceBill:
-
 	def __init__(self, root):
+
 
 		self.categories_management = DBinter.CategoriesManagement()
 		self.bill_management = DBinter.BillsManagement()
@@ -28,31 +28,35 @@ class InterfaceBill:
 		self.canvas_background.pack(expand = 1, fill = "both")
 		self.canvas_background.create_image(0, 0, image = self.image_background, anchor = "nw")
 
+		self.button_style = ttk.Style()
+		self.button_style.configure("TButton", padding=2, relief="flat")
 		self.frame_main = tk.Frame(self.root, width = self.width_root*0.9, height = self.height_root*0.85)
-		self.button_add_bill = tk.Button(self.root, text = "Ajouter", bg = "#284145", relief = "flat", padx = 6, pady = 2, font = ("Arial", 9, "bold"), command = self.command_button_add)
-		self.button_modify_bill = tk.Button(self.root, text = "Modifier", bg = "#284145", relief = "flat", padx = 6, pady = 2, font = ("Arial", 9, "bold"), command = self.command_button_mod)
-		self.button_del_bill = tk.Button(self.root, text = "Supprimer", bg = "#284145", relief = "flat", padx = 6, pady = 2, font = ("Arial", 9, "bold"), command = self.command_button_del)
+		self.button_add_bill = ttk.Button(self.root, text = "Ajouter", command = self.command_button_add)
+		self.button_modify_bill = ttk.Button(self.root, text = "Modifier", command = self.command_button_mod)
+		self.button_del_bill = ttk.Button(self.root, text = "Supprimer", command = self.command_button_del)
 
 		self.treeview_main = ttk.Treeview(self.frame_main)
 		self.width_column = int((self.width_root*0.9)/20)
-		self.treeview_main["columns"] = ("bill_name", "category", "bill_date", "due_date", "price", "paid", "notes")
+		self.treeview_main["columns"] = ("bill_name", "category", "init_date", "due_date", "price", "paid", "notes")
 		self.treeview_main["show"] = "headings"
 		self.treeview_main.column("bill_name", width = self.width_column*2)
 		self.treeview_main.column("category", width = self.width_column*2)
-		self.treeview_main.column("bill_date", width = self.width_column)
+		self.treeview_main.column("init_date", width = self.width_column)
 		self.treeview_main.column("due_date", width =self.width_column)
 		self.treeview_main.column("price", width = self.width_column)
 		self.treeview_main.column("paid", width = self.width_column)
 		self.treeview_main.column("notes", width =self.width_column*3)
 
-		self.treeview_main.heading("bill_name", text = "Nom")
-		self.treeview_main.heading("category", text  = "Categorie")
-		self.treeview_main.heading("bill_date", text = "Date d'émission")
-		self.treeview_main.heading("due_date", text = "Date d'échéance")
-		self.treeview_main.heading("price", text = "Montant")
-		self.treeview_main.heading("paid", text = "Statut")
-		self.treeview_main.heading("notes", text = "Notes")
-		
+		self.treeview_main.heading("bill_name", text = "Nom", command = lambda : self.sort_tree("bill_name", "DESC"))
+		self.treeview_main.heading("category", text  = "Categorie", command = lambda : self.sort_tree("category", "DESC"))
+		self.treeview_main.heading("init_date", text = "Date d'émission", command = lambda : self.sort_tree("init_date", "DESC"))
+		self.treeview_main.heading("due_date", text = "Date d'échéance", command = lambda : self.sort_tree("due_date", "DESC"))
+		self.treeview_main.heading("price", text = "Montant", command = lambda : self.sort_tree("price", "DESC"))
+		self.treeview_main.heading("paid", text = "Statut", command = lambda : self.sort_tree("paid", "DESC"))
+		self.treeview_main.heading("notes", text = "Notes", command = lambda : self.sort_tree("notes", "DESC"))
+		self.columns = {"bill_name" : "DESC", "category" : "DESC", "init_date" : "DESC",
+						"due_date" : "DESC", "price" : "DESC", "paid" : "DESC", "notes" : "DESC"}
+
 
 		self.menu_bar = tk.Menu(self.root)
 		self.file_menu = tk.Menu(self.menu_bar, tearoff = 0)
@@ -93,13 +97,24 @@ class InterfaceBill:
 			self.values = self.item_text["values"]
 			return self.values
 
+	def sort_tree(self, data, sort):
+
+		self.update_bills(sorting = (data, sort))
+		
+		if sort == "DESC":
+			self.columns[data] = "ASC"
+		else:
+			self.columns[data] = "DESC"
+
+		self.treeview_main.heading(data, command = lambda : self.sort_tree(data, self.columns[data]))
+
 	def command_menu_about(self):
 
 		self.top_about = tk.Toplevel(self.root)
 		self.top_about.title("À propos")
 
 		self.msg_about = tk.Message(self.top_about, text = "Application créee par\nCédric Guyaz")
-		self.button_top_about = tk.Button(self.top_about, text = "Fermer", font = ("Arial", 9, "bold"), command = self.top_about.destroy)
+		self.button_top_about = ttk.Button(self.top_about, text = "Fermer", command = self.top_about.destroy)
 		self.msg_about.pack(side = "top")
 		self.button_top_about.pack(side = "top")
 
@@ -121,7 +136,7 @@ class InterfaceBill:
 		self.id_bill_mod = self.bill_management.get_bill_id(self.bill_to_mod)
 
 		for i in range(len(self.non_labels_top_add)):
-			if type(self.non_labels_top_add[i]) is type(tk.Entry()):
+			if type(self.non_labels_top_add[i]) is type(ttk.Entry()):
 				self.non_labels_top_add[i].insert("end", self.bill_to_mod[i])
 			elif type(self.non_labels_top_add[i]) is type(ttk.Combobox()):
 				self.non_labels_top_add[i].set(self.bill_to_mod[i])
@@ -138,15 +153,15 @@ class InterfaceBill:
 
 		self.paid = 0
 		self.label_top_add_name = tk.Label(self.top_add_bill, text = "Nom :")
-		self.entry_top_add_name = tk.Entry(self.top_add_bill)
+		self.entry_top_add_name = ttk.Entry(self.top_add_bill)
 		self.label_top_add_category = tk.Label(self.top_add_bill, text = "Catégorie :")
 		self.combobox_categories = ttk.Combobox(self.top_add_bill, height = 4, state = "readonly", values = self.categories_management.get_all_categories())
 		self.label_top_add_init_date = tk.Label(self.top_add_bill, text = "Date d'émission :")
-		self.entry_top_add_init_date = tk.Entry(self.top_add_bill)
+		self.entry_top_add_init_date = ttk.Entry(self.top_add_bill)
 		self.label_top_add_due_date = tk.Label(self.top_add_bill, text = "Daté d'échéance :")
-		self.entry_top_add_due_date = tk.Entry(self.top_add_bill)
+		self.entry_top_add_due_date = ttk.Entry(self.top_add_bill)
 		self.label_top_add_price = tk.Label(self.top_add_bill, text = "Prix :")
-		self.entry_top_add_price = tk.Entry(self.top_add_bill)
+		self.entry_top_add_price = ttk.Entry(self.top_add_bill)
 		self.label_top_add_paid = tk.Label(self.top_add_bill, text = "Payée? :")
 		self.checkbutton_paid = tk.Checkbutton(self.top_add_bill, variable = self.paid)
 		self.label_top_add_note = tk.Label(self.top_add_bill, text = "Notes :")
@@ -164,8 +179,8 @@ class InterfaceBill:
 			self.labels_top_add[i].grid(row = i, column = 0)
 			self.non_labels_top_add[i].grid(row = i, column = 1)
 
-		self.button_top_add_confirm = tk.Button(self.top_add_bill, text = "Confirmer", command = self.command_confirm_add)
-		self.button_top_add_cancel = tk.Button(self.top_add_bill, text = "Annuler", command = self.top_add_bill.destroy)
+		self.button_top_add_confirm = ttk.Button(self.top_add_bill, text = "Confirmer", command = self.command_confirm_add)
+		self.button_top_add_cancel = ttk.Button(self.top_add_bill, text = "Annuler", command = self.top_add_bill.destroy)
 		self.button_top_add_confirm.grid(row = 8, column = 4)
 		self.button_top_add_cancel.grid(row = 8, column = 3)
 
@@ -190,10 +205,10 @@ class InterfaceBill:
 
 		self.top_add_bill.destroy()
 
-	def update_bills(self, filter_type = 0):
+	def update_bills(self, filter_type = 0, sorting = ("due_date", "DESC")):
 
 		self.treeview_main.delete(*self.treeview_main.get_children())
-		self.all_bills = self.bill_management.get_all_bills(filter_applied = filter_type)
+		self.all_bills = self.bill_management.get_all_bills(filter_applied = filter_type, sort = sorting)
 		for element in self.all_bills:
 			val = (element["bill_name"],
 				element["category"],
@@ -224,9 +239,9 @@ class InterfaceBill:
 		self.top_categories_listbox.pack(expand = 1, fill = "both")
 
 		self.frame_top_buttons_categories = tk.Frame(self.top_menu_categories, width = self.width_root*0.70)
-		self.button_categories_add = tk.Button(self.frame_top_buttons_categories, text = "Ajouter", padx = 6, pady = 2, command = self.command_add_category)
-		self.button_categories_delete = tk.Button(self.frame_top_buttons_categories, text = "Supprimer", padx = 6, pady = 2, command = self.command_delete_category)
-		self.entry_top_categories = tk.Entry(self.frame_top_buttons_categories)
+		self.button_categories_add = ttk.Button(self.frame_top_buttons_categories, text = "Ajouter", command = self.command_add_category)
+		self.button_categories_delete = ttk.Button(self.frame_top_buttons_categories, text = "Supprimer", command = self.command_delete_category)
+		self.entry_top_categories = ttk.Entry(self.frame_top_buttons_categories)
 
 		self.frame_top_buttons_categories.place(anchor = "se", relx = 0.75/2, rely = 0.95)
 		self.button_categories_add.pack(side = "right")

@@ -29,7 +29,7 @@ class BillsManagement:
 
 		self.connection.commit()
 
-	def get_all_bills(self, filter_applied = 0):
+	def get_all_bills(self, filter_applied = 0, sort = ("due_date", "ASC")):
 
 		# 0 = "Toutes" 1 = "7 prochains jours" 2 = "30 prochains jours" 3 = "Payées" 4 = "Impayées"
 
@@ -45,7 +45,9 @@ class BillsManagement:
 				self.sql += "WHERE (`paid` = 0)"
 			elif filter_applied == 4:
 				self.sql += "WHERE (`paid` = 1)"
-			self.sql += "ORDER BY `due_date`"
+			
+			self.sql += "ORDER BY `{}`".format(sort[0])
+			self.sql += sort[1]
 
 			cursor.execute(self.sql)
 			return cursor.fetchall()
@@ -169,7 +171,7 @@ if __name__ == "__main__":
 	#print(bill_test.get_all_bills())
 
 	#print(bill_test.get_all_bills())
-	print(bill_test.get_all_bills(1))
+	#print(bill_test.get_all_bills(sort = ("price", "ASC")))
 
 
 	bill_test.close_connection()

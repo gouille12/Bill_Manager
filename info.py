@@ -5,7 +5,6 @@ Gestion de facture
 	a. Scrollbar
 	c. Permettre le double click pour modifier
 	f. paid = oui/non
-	h. modify bill
 	i.
 5. Permettre le resizing
 7. top_about
@@ -27,17 +26,9 @@ Gestion de facture
 	i. Mettre ca beau
 	k.
 11. Faire tests dans un fichier à part
-13. Base de données
-	h. Optimiser modify
-	i.
-14. Filtrage
-	a. clickage des headings pour sorter
-	b. permettre de sorter asc, des
-	d.
-15. Passer à ttk?
 16. Erreurs
 	a. Lister toutes les erreurs possibles
-	b. 
+		1. 
 17. paid -> 1 dans la database
 18. Raccourcis clavier
 	a. Enter pour les boutons confirmer
@@ -50,7 +41,8 @@ Gestion de facture
 21. Close connection
 22. 
 
-PROCHAINE ETAPE :
-ENSUITE : clickage des heading ORDER BY x".format(init_date, due_date, etc.)
-ENSUITE : Archivage
+ENSUITE : paid -> 1 dans la database
+ENSUITE : scrollbar treeview
+ENSUITE : scrollbar listbox
+ENSUITE : Corriger des erreurs
 """
