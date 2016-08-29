@@ -56,12 +56,20 @@ class InterfaceBill:
 
 		self.menu_bar = tk.Menu(self.root)
 		self.file_menu = tk.Menu(self.menu_bar, tearoff = 0)
-		self.file_menu.add_command(label = "Statistiques")
 		self.file_menu.add_command(label = "Catégories", command = self.command_menu_categories)
 		self.file_menu.add_command(label = "À propos", command = self.command_menu_about)
 		self.file_menu.add_separator()
 		self.file_menu.add_command(label = "Quitter", command = sys.exit)
 		self.menu_bar.add_cascade(label = "Fichier", menu = self.file_menu)
+
+		self.filtering = tk.Menu(self.menu_bar, tearoff = 0)
+		self.filtering.add_command(label = "Toutes", command = lambda : self.update_bills(0))
+		self.filtering.add_command(label = "Prochaine semaine", command = lambda : self.update_bills(1))
+		self.filtering.add_command(label = "Prochain mois", command = lambda : self.update_bills(2))
+		self.filtering.add_command(label = "À payer", command = lambda : self.update_bills(3))
+		self.filtering.add_command(label = "Payées", command = lambda : self.update_bills(4))
+		self.menu_bar.add_cascade(label = "Filtres", menu = self.filtering)
+
 		self.root.config(menu = self.menu_bar)
 
 
@@ -182,10 +190,10 @@ class InterfaceBill:
 
 		self.top_add_bill.destroy()
 
-	def update_bills(self):
+	def update_bills(self, filter_type = 0):
 
 		self.treeview_main.delete(*self.treeview_main.get_children())
-		self.all_bills = self.bill_management.get_all_bills()
+		self.all_bills = self.bill_management.get_all_bills(filter_applied = filter_type)
 		for element in self.all_bills:
 			val = (element["bill_name"],
 				element["category"],

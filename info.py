@@ -8,9 +8,6 @@ Gestion de facture
 	h. modify bill
 	i.
 5. Permettre le resizing
-6. Commande des options du menu
-	c. Stats
-	d.
 7. top_about
 	a. Grosseur
 	b. endroit dans l'écran
@@ -36,7 +33,7 @@ Gestion de facture
 14. Filtrage
 	a. clickage des headings pour sorter
 	b. permettre de sorter asc, des
-	c.
+	d.
 15. Passer à ttk?
 16. Erreurs
 	a. Lister toutes les erreurs possibles
@@ -53,8 +50,7 @@ Gestion de facture
 21. Close connection
 22. 
 
-PROCHAINE ETAPE : mod gui
+PROCHAINE ETAPE :
 ENSUITE : clickage des heading ORDER BY x".format(init_date, due_date, etc.)
-ENSUITE : Filtres (menu déroulant avec 4-5 options possibles)
 ENSUITE : Archivage
 """

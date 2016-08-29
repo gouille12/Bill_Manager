@@ -29,15 +29,28 @@ class BillsManagement:
 
 		self.connection.commit()
 
-	def get_all_bills(self):
+	def get_all_bills(self, filter_applied = 0):
+
+		# 0 = "Toutes" 1 = "7 prochains jours" 2 = "30 prochains jours" 3 = "Payées" 4 = "Impayées"
 
 		with self.connection.cursor() as cursor:
 
 			self.sql = """SELECT `bill_name`, `category`, `init_date`, `due_date`, `price`, `paid`, `notes`
-						FROM `bills`
-						ORDER BY `due_date`"""
+						FROM `bills`"""
+			if filter_applied == 1:
+				self.sql += "WHERE (`due_date` < ADDDATE(CURDATE(), 7))"
+			elif filter_applied == 2:
+				self.sql += "WHERE (`due_date` < ADDDATE(CURDATE(), 31))"
+			elif filter_applied == 3:
+				self.sql += "WHERE (`paid` = 0)"
+			elif filter_applied == 4:
+				self.sql += "WHERE (`paid` = 1)"
+			self.sql += "ORDER BY `due_date`"
+
 			cursor.execute(self.sql)
 			return cursor.fetchall()
+
+
 
 	def delete_bill(self, bill_to_del_id):
 
@@ -148,12 +161,17 @@ if __name__ == "__main__":
 	test.close_connection()
 
 	bill_test = BillsManagement()
-	#bill_test.add_bill(['rororo', 'lolo', 20160514, 20161020, 253.20, 0, 'test_4'])
+	#bill_test.add_bill(['momo', 'lolo', 20160514, 20161205, 253.20, 0, 'test_4'])
 	#x = bill_test.get_bill_id(['rororo', 'lolo', 20160514, 20161020, 253.20, 0, 'test_4'])	
 	#print(x)
 	#bill_test.delete_bill(x)
-	#print(bill_test.get_all_bills())
 	#bill_test.modify_bill(x, ['bobobo', 'nonodo', 20160414, 20160920, 243.20, 1, 'tes_4'])
+	#print(bill_test.get_all_bills())
+
+	#print(bill_test.get_all_bills())
+	print(bill_test.get_all_bills(1))
+
+
 	bill_test.close_connection()
 
 
