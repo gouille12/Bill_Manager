@@ -2,34 +2,32 @@
 Gestion de facture
 
 1. Main
-	a. Scrollbar
 	c. Permettre le double click pour modifier
-	f. paid = oui/non
 	i.
 5. Permettre le resizing
 7. top_about
 	a. Grosseur
 	b. endroit dans l'écran
 	c. Beau
-	d.
+	d. Fond d'écran
+	e.
 9. toplevel add
 	d. Mettre ca beau
 	e. Grosseur
 	f. endroit dans l'écran
-	k.
+	k. fond d'écran
+	l.
 10. top_categories
 	a. Grosseur
 	b. Endroit dans l'écran
-	f. command insérer
-	g. command supprimer
 	h. Distribution widgets du bas
 	i. Mettre ca beau
-	k.
-11. Faire tests dans un fichier à part
+	k. treeview
+	l. fond d'écran
+	m.
 16. Erreurs
 	a. Lister toutes les erreurs possibles
 		1. 
-17. paid -> 1 dans la database
 18. Raccourcis clavier
 	a. Enter pour les boutons confirmer
 	b. Escape pour quitter
@@ -38,11 +36,16 @@ Gestion de facture
 	e.
 19. Permettre de pouvoir selectionner plusieurs facture
 20. Système d'archivage au lieu de supprimer
+	a. option "Montrer factures archivées"
+	b. Bouton archiver dans modifier
+	c. 
 21. Close connection
-22. 
+22. Faire une section TODO list plus bas (quand toute est fini)
+23. En-tete
+24. Distribution des classes
+25. Distribution des fonctions
+26. Aérer
+27.
 
-ENSUITE : paid -> 1 dans la database
-ENSUITE : scrollbar treeview
-ENSUITE : scrollbar listbox
 ENSUITE : Corriger des erreurs
 """

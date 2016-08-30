@@ -90,10 +90,10 @@ class InterfaceBill:
 
 		self.update_bills()
 
-	def select_item_tree(self):
+	def select_item_tree(self, tree):
 	
-		for item in self.treeview_main.selection():
-			self.item_text = self.treeview_main.item(item)
+		for item in tree.selection():
+			self.item_text = tree.item(item)
 			self.values = self.item_text["values"]
 			return self.values
 
@@ -125,13 +125,13 @@ class InterfaceBill:
 
 	def command_button_del(self):
 		
-		self.bill_to_del = self.bill_management.get_bill_id(self.select_item_tree())
+		self.bill_to_del = self.bill_management.get_bill_id(self.select_item_tree(self.treeview_main))
 		self.bill_management.delete_bill(self.bill_to_del)
 		self.update_bills()
 	
 	def command_button_mod(self):
 
-		self.bill_to_mod = self.select_item_tree()
+		self.bill_to_mod = self.select_item_tree(self.treeview_main)
 		self.command_button_add()
 		self.id_bill_mod = self.bill_management.get_bill_id(self.bill_to_mod)
 
@@ -148,10 +148,11 @@ class InterfaceBill:
 
 	def command_button_add(self):
 		
+
 		self.top_add_bill = tk.Toplevel(self.root)
 		self.top_add_bill.title("Ajouter une facture")
 
-		self.paid = 0
+		self.paid = tk.IntVar()
 		self.label_top_add_name = tk.Label(self.top_add_bill, text = "Nom :")
 		self.entry_top_add_name = ttk.Entry(self.top_add_bill)
 		self.label_top_add_category = tk.Label(self.top_add_bill, text = "Catégorie :")
@@ -163,7 +164,7 @@ class InterfaceBill:
 		self.label_top_add_price = tk.Label(self.top_add_bill, text = "Prix :")
 		self.entry_top_add_price = ttk.Entry(self.top_add_bill)
 		self.label_top_add_paid = tk.Label(self.top_add_bill, text = "Payée? :")
-		self.checkbutton_paid = tk.Checkbutton(self.top_add_bill, variable = self.paid)
+		self.checkbutton_paid = tk.Checkbutton(self.top_add_bill, variable = self.paid, command = self.get_checkbutton)
 		self.label_top_add_note = tk.Label(self.top_add_bill, text = "Notes :")
 		self.text_top_add_note = tk.Text(self.top_add_bill)
 
@@ -190,7 +191,7 @@ class InterfaceBill:
 		self.info_bill_to_add = []
 		for element in self.non_labels_top_add:
 			if element == self.checkbutton_paid:
-				self.info_bill_to_add.append(self.paid)
+				self.info_bill_to_add.append(self.paid.get())
 			elif element == self.text_top_add_note:
 				self.info_bill_to_add.append(self.text_top_add_note.get(1.0, "end"))
 			else:	
@@ -210,14 +211,23 @@ class InterfaceBill:
 		self.treeview_main.delete(*self.treeview_main.get_children())
 		self.all_bills = self.bill_management.get_all_bills(filter_applied = filter_type, sort = sorting)
 		for element in self.all_bills:
+			if element["paid"] == 1:
+				self.paid_tree = "Ok"
+			elif element["paid"] == 0:
+				self.paid_tree = " "
+
 			val = (element["bill_name"],
 				element["category"],
 				element["init_date"],
 				element["due_date"],
 				element["price"],
-				element["paid"],
+				self.paid_tree,
 				element["notes"])
 			self.treeview_main.insert("", 0, values = val)
+
+	def get_checkbutton(self):
+
+		return self.paid.get()
 
 
 
@@ -232,11 +242,16 @@ class InterfaceBill:
 	def command_menu_categories(self):
 
 		self.top_menu_categories = tk.Toplevel(self.root, height = self.height_root*0.75, width = self.width_root*0.75)
-		self.frame_top_listbox = tk.Frame(self.top_menu_categories, height = self.height_root*0.6, width = self.width_root*0.70)
-		self.frame_top_listbox.propagate(0)
-		self.frame_top_listbox.place(relx = 0.025, rely = 0.05, anchor = "nw")
-		self.top_categories_listbox = tk.Listbox(self.frame_top_listbox, selectmode = "extended", bg = "#82916F", highlightthickness = 0, borderwidth = 1, font = ("Arial", 11), selectbackground = "#284145")
-		self.top_categories_listbox.pack(expand = 1, fill = "both")
+		self.frame_top_treeview = tk.Frame(self.top_menu_categories, height = self.height_root*0.6, width = self.width_root*0.70)
+		self.frame_top_treeview.propagate(0)
+		self.frame_top_treeview.place(relx = 0.025, rely = 0.05, anchor = "nw")
+		
+		self.treeview_top_categories = ttk.Treeview(self.frame_top_treeview)
+		self.treeview_top_categories["columns"] = ("categories")
+		self.treeview_top_categories["show"] = "headings"
+		self.treeview_top_categories.column("categories")
+		self.treeview_top_categories.heading("categories", text = "Catégories")
+		self.treeview_top_categories.pack(fill = "both", expand = 1)
 
 		self.frame_top_buttons_categories = tk.Frame(self.top_menu_categories, width = self.width_root*0.70)
 		self.button_categories_add = ttk.Button(self.frame_top_buttons_categories, text = "Ajouter", command = self.command_add_category)
@@ -248,7 +263,7 @@ class InterfaceBill:
 		self.button_categories_delete.pack(side = "right")
 		self.entry_top_categories.pack(side = "right", expand = 1, fill = "both")
 
-		self.update_categories_listbox()
+		self.update_categories_tree()
 
 	def command_add_category(self):
 
@@ -256,21 +271,21 @@ class InterfaceBill:
 		self.entry_top_categories.delete(0, "end")
 
 		self.categories_management.add_category(self.category_added)
-		self.update_categories_listbox()
+		self.update_categories_tree()
 
-	def update_categories_listbox(self):
+	def update_categories_tree(self):
 
-		self.top_categories_listbox.delete(0, "end")
+		self.treeview_top_categories.delete(*self.treeview_top_categories.get_children())
 
 		self.all_categories = self.categories_management.get_all_categories()
 		for element in self.all_categories:
-			self.top_categories_listbox.insert("end", element)
+			self.treeview_top_categories.insert("", 0, values = element)
 
 	def command_delete_category(self):
 
-		self.category_to_del = self.top_categories_listbox.get("active")
+		self.category_to_del = self.select_item_tree(self.treeview_top_categories)
 		self.categories_management.delete_category(self.category_to_del)
-		self.update_categories_listbox()
+		self.update_categories_tree()
 
 
 
@@ -280,11 +295,6 @@ if __name__ == "__main__":
 	app = InterfaceBill(root)
 	root.mainloop()
 
-
-	#def command_button_modify(self):
-		#toplevel window
-		#modier dans listbox
-		#modifier dans databse
 
 	#def resize:
 		#resize
