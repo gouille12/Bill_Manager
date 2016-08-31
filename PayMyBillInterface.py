@@ -73,9 +73,12 @@ class InterfaceBill:
 		self.filtering.add_command(label = "À payer", command = lambda : self.update_bills(3))
 		self.filtering.add_command(label = "Payées", command = lambda : self.update_bills(4))
 		self.menu_bar.add_cascade(label = "Filtres", menu = self.filtering)
-
 		self.root.config(menu = self.menu_bar)
 
+
+		self.treeview_main.bind("<Double-Button-1>", self.double_click_tree)
+		self.root.bind("<Control-a>", self.command_button_add)
+		self.root.bind("<Control-s>", self.control_S)
 
 		self.bill_main_init()
 
@@ -123,6 +126,7 @@ class InterfaceBill:
 		self.button_top_about = ttk.Button(self.top_about, text = "Fermer", command = self.top_about.destroy)
 		self.msg_about.pack(side = "top")
 		self.button_top_about.pack(side = "top")
+		self.top_about.bind("<Escape>", lambda _: self.button_top_about.invoke())
 
 
 
@@ -152,11 +156,12 @@ class InterfaceBill:
 		self.button_top_add_confirm.config(command = lambda: self.command_confirm_add(mod = True))
 
 
-	def command_button_add(self):
+	def command_button_add(self, *event):
 		
 
 		self.top_add_bill = tk.Toplevel(self.root)
 		self.top_add_bill.title("Ajouter une facture")
+
 
 		self.paid = tk.IntVar()
 		self.label_top_add_name = tk.Label(self.top_add_bill, text = "Nom :")
@@ -190,8 +195,10 @@ class InterfaceBill:
 		self.button_top_add_cancel = ttk.Button(self.top_add_bill, text = "Annuler", command = self.top_add_bill.destroy)
 		self.button_top_add_confirm.grid(row = 8, column = 4)
 		self.button_top_add_cancel.grid(row = 8, column = 3)
+		self.top_add_bill.bind("<Escape>", lambda _: self.button_top_add_cancel.invoke())
+		self.top_add_bill.bind("<Return>", lambda _: self.button_top_add_confirm.invoke())
 
-	def command_confirm_add(self, mod = False):
+	def command_confirm_add(self, mod = False, *event):
 
 
 		self.info_bill_to_add = []
@@ -246,11 +253,19 @@ class InterfaceBill:
 		return self.paid.get()
 
 
+	def double_click_tree(self, event):
 
+		try:
+			self.command_button_mod()
+		except TypeError:
+			self.top_add_bill.destroy()
 
+	def control_S(self, event):
 
-
-
+		try:
+			self.command_button_del()
+		except TypeError:
+			pass
 
 
 
@@ -279,6 +294,8 @@ class InterfaceBill:
 		self.button_categories_delete.pack(side = "right")
 		self.entry_top_categories.pack(side = "right", expand = 1, fill = "both")
 
+		self.top_menu_categories.bind("<Escape>", lambda _: self.top_menu_categories.destroy())
+		self.top_menu_categories.bind("<Return>", lambda _: self.button_categories_add.invoke())
 		self.update_categories_tree()
 
 	def command_add_category(self):

@@ -2,8 +2,8 @@
 Gestion de facture
 
 1. Main
-	c. Permettre le double click pour modifier
-	i.
+	i. Limiter la sélection multiple
+	j.
 5. Permettre le resizing
 7. top_about
 	a. Grosseur
@@ -23,13 +23,8 @@ Gestion de facture
 	h. Distribution widgets du bas
 	i. Mettre ca beau
 	l. fond d'écran
-	m.
-18. Raccourcis clavier
-	a. Enter pour les boutons confirmer
-	b. Escape pour quitter
-	c. ctrl-a pour ajouter
-	d. ctrl-d pour supprimer
-	e.
+	m. Limiter la sélection multiple
+	n.
 19. Permettre de pouvoir selectionner plusieurs facture pour les supprimer
 20. Système d'archivage au lieu de supprimer
 	a. option "Montrer factures archivées"
@@ -43,8 +38,7 @@ Gestion de facture
 26. Aérer
 27. Mettre beau top_error (même que about)
 28. Ajouter toujours catégorie vide
-30.
-
-ENSUITE : double-click pour modifier
-ENSUITE : permettre de supprimer plusieurs bill ensemble (fetchall id)
+30. Uniformiser les string
+31. Toujours mettre en focus la fenetre d'intéret
+32.
 """
