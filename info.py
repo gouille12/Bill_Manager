@@ -22,19 +22,15 @@ Gestion de facture
 	b. Endroit dans l'écran
 	h. Distribution widgets du bas
 	i. Mettre ca beau
-	k. treeview
 	l. fond d'écran
 	m.
-16. Erreurs
-	a. Lister toutes les erreurs possibles
-		1. 
 18. Raccourcis clavier
 	a. Enter pour les boutons confirmer
 	b. Escape pour quitter
 	c. ctrl-a pour ajouter
 	d. ctrl-d pour supprimer
 	e.
-19. Permettre de pouvoir selectionner plusieurs facture
+19. Permettre de pouvoir selectionner plusieurs facture pour les supprimer
 20. Système d'archivage au lieu de supprimer
 	a. option "Montrer factures archivées"
 	b. Bouton archiver dans modifier
@@ -45,7 +41,10 @@ Gestion de facture
 24. Distribution des classes
 25. Distribution des fonctions
 26. Aérer
-27.
+27. Mettre beau top_error (même que about)
+28. Ajouter toujours catégorie vide
+30.
 
-ENSUITE : Corriger des erreurs
+ENSUITE : double-click pour modifier
+ENSUITE : permettre de supprimer plusieurs bill ensemble (fetchall id)
 """

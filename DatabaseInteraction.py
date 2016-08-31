@@ -3,6 +3,7 @@
 
 #class BillDatabase:?
 import pymysql.cursors
+import datetime
 
 class BillsManagement:
 
@@ -21,6 +22,9 @@ class BillsManagement:
 	def add_bill(self, bill_info):
 
 		self.bill_info = bill_info
+		self.verify_info(self.bill_info)
+		self.bill_info[2] = datetime.datetime.strptime(self.bill_info[2], "%d-%m-%Y").date()
+		self.bill_info[3] = datetime.datetime.strptime(self.bill_info[3], "%d-%m-%Y").date()
 
 		with self.connection.cursor() as cursor:
 
@@ -70,6 +74,9 @@ class BillsManagement:
 
 		self.bill_to_mod_id = bill_to_mod_id
 		self.new_info = new_info
+		self.verify_info(self.new_info)
+		self.new_info[2] = datetime.datetime.strptime(self.new_info[2], "%d-%m-%Y").date()
+		self.new_info[3] = datetime.datetime.strptime(self.new_info[3], "%d-%m-%Y").date()
 		self.new_info.append(self.bill_to_mod_id)
 		with self.connection.cursor() as cursor:
 
@@ -84,6 +91,8 @@ class BillsManagement:
 	def get_bill_id(self, bill_info):
 
 		self.bill_info = bill_info
+		self.bill_info[2] = datetime.datetime.strptime(self.bill_info[2], "%d-%m-%Y").date()
+		self.bill_info[3] = datetime.datetime.strptime(self.bill_info[3], "%d-%m-%Y").date()
 
 		with self.connection.cursor() as cursor:
 
@@ -99,6 +108,28 @@ class BillsManagement:
 			cursor.execute(self.sql, (tuple(self.bill_info)))
 
 			return cursor.fetchone()['id']
+
+
+	def verify_info(self, bill_info_verify):
+
+		self.bill_info_verify = bill_info_verify
+		try:
+			self.init_date_verify = datetime.datetime.strptime(self.bill_info_verify[2], "%d-%m-%Y").date()
+		except ValueError:
+			raise ValueError("Date d'émission invalide")
+		
+		try:
+			self.due_date_verify = datetime.datetime.strptime(self.bill_info_verify[3], "%d-%m-%Y").date()
+		except ValueError:
+			raise ValueError("Date d'échéance invalide")
+
+		try:
+			if not (99999 > float(self.bill_info_verify[4]) >= 0):
+				raise ValueError("Montant invalide")
+		except TypeError:
+			raise ValueError("Montant invalide")
+
+		
 
 		
 class CategoriesManagement:
@@ -163,15 +194,14 @@ if __name__ == "__main__":
 	test.close_connection()
 
 	bill_test = BillsManagement()
-	#bill_test.add_bill(['momo', 'lolo', 20160514, 20161205, 253.20, 0, 'test_4'])
-	#x = bill_test.get_bill_id(['rororo', 'lolo', 20160514, 20161020, 253.20, 0, 'test_4'])	
+	#bill_test.add_bill(['toto', 'lolo', "14-06-2016", "11-11-2016", "253.20", 1, 'test_4'])
+	#x = bill_test.get_bill_id(['toto', 'lolo', "14-06-2016", "11-11-2016", "253.20", 1, 'test_4'])	
 	#print(x)
 	#bill_test.delete_bill(x)
-	#bill_test.modify_bill(x, ['bobobo', 'nonodo', 20160414, 20160920, 243.20, 1, 'tes_4'])
-	#print(bill_test.get_all_bills())
-
+	#bill_test.modify_bill(x, ['popo', 'doolo', "20-01-2016", "09-09-2016", "110.20", 1, 'test_12'])
 	#print(bill_test.get_all_bills())
 	#print(bill_test.get_all_bills(sort = ("price", "ASC")))
 
+	#bill_test.verify_info(['toto', 'lolo', "14-12-2016", "11-11-2016", "253.20", 1, 'test_4'])
 
 	bill_test.close_connection()

@@ -95,6 +95,12 @@ class InterfaceBill:
 		for item in tree.selection():
 			self.item_text = tree.item(item)
 			self.values = self.item_text["values"]
+
+			if len(self.values) > 1:
+				if self.values[5] == "Ok":
+					self.values[5] = 1
+				else:
+					self.values[5] = 0
 			return self.values
 
 	def sort_tree(self, data, sort):
@@ -135,13 +141,13 @@ class InterfaceBill:
 		self.command_button_add()
 		self.id_bill_mod = self.bill_management.get_bill_id(self.bill_to_mod)
 
-		for i in range(len(self.non_labels_top_add)):
-			if type(self.non_labels_top_add[i]) is type(ttk.Entry()):
-				self.non_labels_top_add[i].insert("end", self.bill_to_mod[i])
-			elif type(self.non_labels_top_add[i]) is type(ttk.Combobox()):
-				self.non_labels_top_add[i].set(self.bill_to_mod[i])
-			elif type(self.non_labels_top_add[i]) is type(tk.Text()):
-				self.non_labels_top_add[i].insert(1.0, self.bill_to_mod[i])
+		self.entry_top_add_name.insert("end", self.bill_to_mod[0])
+		self.combobox_categories.set(self.bill_to_mod[1])
+		self.entry_top_add_init_date.insert("end", datetime.datetime.strftime(self.bill_to_mod[2], "%d-%m-%Y"))
+		self.entry_top_add_due_date.insert("end", datetime.datetime.strftime(self.bill_to_mod[3], "%d-%m-%Y"))
+		self.entry_top_add_price.insert("end", self.bill_to_mod[4])
+		if self.bill_to_mod[5] == 1: self.checkbutton_paid.select()
+		self.text_top_add_note.insert(1.0, self.bill_to_mod[6])
 		
 		self.button_top_add_confirm.config(command = lambda: self.command_confirm_add(mod = True))
 
@@ -196,16 +202,23 @@ class InterfaceBill:
 				self.info_bill_to_add.append(self.text_top_add_note.get(1.0, "end"))
 			else:	
 				self.info_bill_to_add.append(element.get())
-		if mod is True:
-			self.bill_management.modify_bill(self.id_bill_mod, self.info_bill_to_add)
-			self.button_top_add_confirm.config(command = lambda: self.command_confirm_add(mod = False))
-		else:
-			self.bill_management.add_bill(self.info_bill_to_add)
+		try:
+			if mod is True:
+				self.bill_management.modify_bill(self.id_bill_mod, self.info_bill_to_add)
+				self.button_top_add_confirm.config(command = lambda: self.command_confirm_add(mod = False))
+			else:
+				self.bill_management.add_bill(self.info_bill_to_add)
 
-		self.update_bills()
-
-		self.top_add_bill.destroy()
-
+			self.update_bills()
+			self.top_add_bill.destroy()
+		except ValueError:
+			self.top_error = tk.Toplevel(self.top_add_bill)
+			self.top_error.title("Erreur de saisie")
+			self.msg_error = tk.Message(self.top_error, text = "Données entrées invalides")
+			self.button_top_error = ttk.Button(self.top_error, text = "Fermer", command = self.top_error.destroy)
+			self.msg_error.pack(side = "top")
+			self.button_top_error.pack(side = "top")
+			
 	def update_bills(self, filter_type = 0, sorting = ("due_date", "DESC")):
 
 		self.treeview_main.delete(*self.treeview_main.get_children())
@@ -216,10 +229,13 @@ class InterfaceBill:
 			elif element["paid"] == 0:
 				self.paid_tree = " "
 
+			self.init_date_tree = datetime.datetime.strftime(element["init_date"], "%d-%m-%Y")
+			self.due_date_tree = datetime.datetime.strftime(element["due_date"], "%d-%m-%Y")
+
 			val = (element["bill_name"],
 				element["category"],
-				element["init_date"],
-				element["due_date"],
+				self.init_date_tree,
+				self.due_date_tree,
 				element["price"],
 				self.paid_tree,
 				element["notes"])
@@ -279,7 +295,7 @@ class InterfaceBill:
 
 		self.all_categories = self.categories_management.get_all_categories()
 		for element in self.all_categories:
-			self.treeview_top_categories.insert("", 0, values = element)
+			self.treeview_top_categories.insert("", "end", values = element)
 
 	def command_delete_category(self):
 
