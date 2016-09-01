@@ -17,16 +17,19 @@ class InterfaceBill:
 
 		self.root = root
 		self.width_root, self.height_root = 1000, 650
-		self.root.geometry("{}x{}+183+20".format(self.width_root, self.height_root))
-		self.root.maxsize(self.width_root, self.height_root)
-		self.root.title("PayMyBill")
+		self.root.resizable(width = False, height = False)
+		self.width_screen = self.root.winfo_screenwidth()
+		self.height_screen = self.root.winfo_screenheight()
+		self.x = (self.width_screen/2) - (self.width_root/1.92)
+		self.y = (self.height_screen/2) - (self.height_root/1.8)
+		self.root.geometry("%dx%d+%d+%d" % (self.width_root, self.height_root, self.x, self.y))
+		self.root.title("Gestionnaire de factures")
 		self.root.config(bg = "#121212")
-		self.color_grey = "#CDCDCD"
 
-		self.canvas_background = tk.Canvas(self.root, width = self.width_root, height = self.height_root)
+		self.canvas_background_main = tk.Canvas(self.root, width = self.width_root, height = self.height_root)
 		self.image_background = tk.PhotoImage(file = "test.png")
-		self.canvas_background.pack(expand = 1, fill = "both")
-		self.canvas_background.create_image(0, 0, image = self.image_background, anchor = "nw")
+		self.canvas_background_main.pack(expand = 1, fill = "both")
+		self.canvas_background_main.create_image(0, 0, image = self.image_background, anchor = "nw")
 
 		self.button_style = ttk.Style()
 		self.button_style.configure("TButton", padding=2, relief="flat")
@@ -35,7 +38,7 @@ class InterfaceBill:
 		self.button_modify_bill = ttk.Button(self.root, text = "Modifier", command = self.command_button_mod)
 		self.button_del_bill = ttk.Button(self.root, text = "Supprimer", command = self.command_button_del)
 
-		self.treeview_main = ttk.Treeview(self.frame_main)
+		self.treeview_main = ttk.Treeview(self.frame_main, selectmode = "browse")
 		self.width_column = int((self.width_root*0.9)/20)
 		self.treeview_main["columns"] = ("bill_name", "category", "init_date", "due_date", "price", "paid", "notes")
 		self.treeview_main["show"] = "headings"
@@ -61,7 +64,7 @@ class InterfaceBill:
 		self.menu_bar = tk.Menu(self.root)
 		self.file_menu = tk.Menu(self.menu_bar, tearoff = 0)
 		self.file_menu.add_command(label = "Catégories", command = self.command_menu_categories)
-		self.file_menu.add_command(label = "À propos", command = self.command_menu_about)
+		self.file_menu.add_command(label = "À propos", command = lambda : self.toplevel_message(self.root, "Application créee par\nCédric Guyaz", "À propos"))
 		self.file_menu.add_separator()
 		self.file_menu.add_command(label = "Quitter", command = sys.exit)
 		self.menu_bar.add_cascade(label = "Fichier", menu = self.file_menu)
@@ -117,15 +120,20 @@ class InterfaceBill:
 
 		self.treeview_main.heading(data, command = lambda : self.sort_tree(data, self.columns[data]))
 
-	def command_menu_about(self):
+	def toplevel_message(self, root, msg, title):
 
-		self.top_about = tk.Toplevel(self.root)
-		self.top_about.title("À propos")
-
-		self.msg_about = tk.Message(self.top_about, text = "Application créee par\nCédric Guyaz")
+		self.top_about = tk.Toplevel(root)
+		self.top_about.resizable(width = False, height = False)
+		self.x_about = self.width_screen*0.35
+		self.y_about = self.height_screen*0.3
+		self.top_about.geometry("%dx%d+%d+%d" % (self.width_root*0.3, self.height_root*0.3, self.x_about, self.y_about))
+		self.top_about.title(title)
+		self.canvas_background_about = tk.Canvas(self.top_about)
+		self.canvas_background_about.pack(expand = 1, fill = "both")
+		self.canvas_background_about.create_image(0, 0, image = self.image_background, anchor = "nw")
+		self.canvas_background_about.create_text(self.width_root*0.15, self.height_root*0.1, text = msg, anchor = "center", fill = "white", justify = "center")
 		self.button_top_about = ttk.Button(self.top_about, text = "Fermer", command = self.top_about.destroy)
-		self.msg_about.pack(side = "top")
-		self.button_top_about.pack(side = "top")
+		self.button_top_about.place(relx = 0.5, rely = 0.7, anchor = "center")
 		self.top_about.bind("<Escape>", lambda _: self.button_top_about.invoke())
 
 
@@ -160,24 +168,32 @@ class InterfaceBill:
 		
 
 		self.top_add_bill = tk.Toplevel(self.root)
+		self.x_add = self.width_screen*0.35
+		self.y_add = self.height_screen*0.2
+		self.top_add_bill.geometry("%dx%d+%d+%d" % (self.width_root*0.5, self.height_root*0.5, self.x_add, self.y_add))
 		self.top_add_bill.title("Ajouter une facture")
+		self.canvas_background_add = tk.Canvas(self.top_add_bill, width = self.width_root*0.5, height = self.height_root*0.5)
+		self.canvas_background_add.create_image(0, 0, image = self.image_background)
+		self.canvas_background_add.place(relx = 0.5, rely = 0.5, anchor = "center")
+		self.color = "#EFEFEF"
 
-
+		self.frame_widgets_add = tk.Frame(self.top_add_bill, width = self.width_root*0.3, height = self.height_root*0.4, pady = 2, bg = self.color)
+		self.frame_widgets_add.place(relx = 0.5, rely = 0.5, anchor = "center")
 		self.paid = tk.IntVar()
-		self.label_top_add_name = tk.Label(self.top_add_bill, text = "Nom :")
-		self.entry_top_add_name = ttk.Entry(self.top_add_bill)
-		self.label_top_add_category = tk.Label(self.top_add_bill, text = "Catégorie :")
-		self.combobox_categories = ttk.Combobox(self.top_add_bill, height = 4, state = "readonly", values = self.categories_management.get_all_categories())
-		self.label_top_add_init_date = tk.Label(self.top_add_bill, text = "Date d'émission :")
-		self.entry_top_add_init_date = ttk.Entry(self.top_add_bill)
-		self.label_top_add_due_date = tk.Label(self.top_add_bill, text = "Daté d'échéance :")
-		self.entry_top_add_due_date = ttk.Entry(self.top_add_bill)
-		self.label_top_add_price = tk.Label(self.top_add_bill, text = "Prix :")
-		self.entry_top_add_price = ttk.Entry(self.top_add_bill)
-		self.label_top_add_paid = tk.Label(self.top_add_bill, text = "Payée? :")
-		self.checkbutton_paid = tk.Checkbutton(self.top_add_bill, variable = self.paid, command = self.get_checkbutton)
-		self.label_top_add_note = tk.Label(self.top_add_bill, text = "Notes :")
-		self.text_top_add_note = tk.Text(self.top_add_bill)
+		self.label_top_add_name = tk.Label(self.frame_widgets_add, text = "Nom :", bg = self.color)
+		self.entry_top_add_name = ttk.Entry(self.frame_widgets_add, width = 23)
+		self.label_top_add_category = tk.Label(self.frame_widgets_add, text = "Catégorie :", bg = self.color)
+		self.combobox_categories = ttk.Combobox(self.frame_widgets_add, height = 4, state = "readonly", values = self.categories_management.get_all_categories())
+		self.label_top_add_init_date = tk.Label(self.frame_widgets_add, text = "Date d'émission :", bg = self.color)
+		self.entry_top_add_init_date = ttk.Entry(self.frame_widgets_add, width = 23)
+		self.label_top_add_due_date = tk.Label(self.frame_widgets_add, text = "Daté d'échéance :", bg = self.color)
+		self.entry_top_add_due_date = ttk.Entry(self.frame_widgets_add, width = 23)
+		self.label_top_add_price = tk.Label(self.frame_widgets_add, text = "Prix :", bg = self.color)
+		self.entry_top_add_price = ttk.Entry(self.frame_widgets_add, width = 23)
+		self.label_top_add_paid = tk.Label(self.frame_widgets_add, text = "Payée? :", bg = self.color)
+		self.checkbutton_paid = tk.Checkbutton(self.frame_widgets_add, variable = self.paid, command = self.get_checkbutton, bg = self.color)
+		self.label_top_add_note = tk.Label(self.frame_widgets_add, text = "Notes :", bg = self.color)
+		self.text_top_add_note = tk.Text(self.frame_widgets_add, width = 20, height = 4)
 
 		self.labels_top_add = [self.label_top_add_name, self.label_top_add_category,
 			self.label_top_add_init_date, self.label_top_add_due_date,
@@ -188,13 +204,15 @@ class InterfaceBill:
 			self.entry_top_add_price, self.checkbutton_paid, self.text_top_add_note]
 
 		for i in range(len(self.labels_top_add)):
-			self.labels_top_add[i].grid(row = i, column = 0)
+			self.labels_top_add[i].grid(row = i, column = 0, ipadx = 5)
 			self.non_labels_top_add[i].grid(row = i, column = 1)
 
-		self.button_top_add_confirm = ttk.Button(self.top_add_bill, text = "Confirmer", command = self.command_confirm_add)
-		self.button_top_add_cancel = ttk.Button(self.top_add_bill, text = "Annuler", command = self.top_add_bill.destroy)
-		self.button_top_add_confirm.grid(row = 8, column = 4)
-		self.button_top_add_cancel.grid(row = 8, column = 3)
+		self.frame_buttons_top_add = tk.Frame(self.frame_widgets_add, bg = self.color)
+		self.button_top_add_confirm = ttk.Button(self.frame_buttons_top_add, text = "Confirmer", command = self.command_confirm_add)
+		self.button_top_add_cancel = ttk.Button(self.frame_buttons_top_add, text = "Annuler", command = self.top_add_bill.destroy)
+		self.frame_buttons_top_add.grid(row = 8, column = 0, columnspan = 2)
+		self.button_top_add_confirm.pack(side = "right", padx = 4, pady = 10)
+		self.button_top_add_cancel.pack(side = "right", padx = 4, pady = 10)
 		self.top_add_bill.bind("<Escape>", lambda _: self.button_top_add_cancel.invoke())
 		self.top_add_bill.bind("<Return>", lambda _: self.button_top_add_confirm.invoke())
 
@@ -219,12 +237,7 @@ class InterfaceBill:
 			self.update_bills()
 			self.top_add_bill.destroy()
 		except ValueError:
-			self.top_error = tk.Toplevel(self.top_add_bill)
-			self.top_error.title("Erreur de saisie")
-			self.msg_error = tk.Message(self.top_error, text = "Données entrées invalides")
-			self.button_top_error = ttk.Button(self.top_error, text = "Fermer", command = self.top_error.destroy)
-			self.msg_error.pack(side = "top")
-			self.button_top_error.pack(side = "top")
+			self.toplevel_message(self.top_add_bill, "Données entrées invalides", "Erreur de saisie")
 			
 	def update_bills(self, filter_type = 0, sorting = ("due_date", "DESC")):
 
@@ -272,27 +285,34 @@ class InterfaceBill:
 
 	def command_menu_categories(self):
 
-		self.top_menu_categories = tk.Toplevel(self.root, height = self.height_root*0.75, width = self.width_root*0.75)
-		self.frame_top_treeview = tk.Frame(self.top_menu_categories, height = self.height_root*0.6, width = self.width_root*0.70)
-		self.frame_top_treeview.propagate(0)
-		self.frame_top_treeview.place(relx = 0.025, rely = 0.05, anchor = "nw")
+		self.top_menu_categories = tk.Toplevel(self.root)
+		self.x_categories, self.y_categories = self.width_screen*0.23, self.height_screen*0.15
+		self.top_menu_categories.geometry("%dx%d+%d+%d" % (self.width_root*0.45, self.height_root*0.7, self.x_categories, self.y_categories))
+		self.top_menu_categories.resizable(width = False, height = False)
+
+
+		self.canvas_background_categories = tk.Canvas(self.top_menu_categories)
+		self.canvas_background_categories.pack(expand = 1, fill = "both")		
+		self.canvas_background_categories.create_image(0, 0, image = self.image_background, anchor = "nw")
 		
-		self.treeview_top_categories = ttk.Treeview(self.frame_top_treeview)
+		self.frame_top_treeview = tk.Frame(self.top_menu_categories, height = self.height_root*0.5, width = self.width_root*0.4)
+		self.frame_top_treeview.propagate(0)
+		self.frame_top_treeview.place(relx = 0.05, rely = 0.05, anchor = "nw")
+		
+		self.treeview_top_categories = ttk.Treeview(self.frame_top_treeview, selectmode = "browse")
 		self.treeview_top_categories["columns"] = ("categories")
 		self.treeview_top_categories["show"] = "headings"
 		self.treeview_top_categories.column("categories")
 		self.treeview_top_categories.heading("categories", text = "Catégories")
 		self.treeview_top_categories.pack(fill = "both", expand = 1)
 
-		self.frame_top_buttons_categories = tk.Frame(self.top_menu_categories, width = self.width_root*0.70)
-		self.button_categories_add = ttk.Button(self.frame_top_buttons_categories, text = "Ajouter", command = self.command_add_category)
-		self.button_categories_delete = ttk.Button(self.frame_top_buttons_categories, text = "Supprimer", command = self.command_delete_category)
-		self.entry_top_categories = ttk.Entry(self.frame_top_buttons_categories)
+		self.button_categories_add = ttk.Button(self.top_menu_categories, text = "Ajouter", command = self.command_add_category)
+		self.button_categories_delete = ttk.Button(self.top_menu_categories, text = "Supprimer", command = self.command_delete_category)
+		self.entry_top_categories = ttk.Entry(self.top_menu_categories, width = 30)
 
-		self.frame_top_buttons_categories.place(anchor = "se", relx = 0.75/2, rely = 0.95)
-		self.button_categories_add.pack(side = "right")
-		self.button_categories_delete.pack(side = "right")
-		self.entry_top_categories.pack(side = "right", expand = 1, fill = "both")
+		self.button_categories_add.place(relx = 0.1, rely = 0.8)
+		self.button_categories_delete.place(relx = 0.29, rely = 0.8)
+		self.entry_top_categories.place(relx = 0.5, rely = 0.8)
 
 		self.top_menu_categories.bind("<Escape>", lambda _: self.top_menu_categories.destroy())
 		self.top_menu_categories.bind("<Return>", lambda _: self.button_categories_add.invoke())
