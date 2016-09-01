@@ -129,9 +129,22 @@ class BillsManagement:
 		except TypeError:
 			raise ValueError("Montant invalide")
 
-		
+	def archive(self, bill_to_archive):
 
-		
+		self.bill_to_archive = bill_to_archive
+		with self.connection.cursor() as cursor:
+
+			self.sql = """INSERT INTO `archives`
+						SELECT *
+						FROM `bills`
+						WHERE (`id` = %s)
+						"""
+			cursor.execute(self.sql, self.bill_to_archive)
+
+		self.delete_bill(self.bill_to_archive)
+		self.connection.commit()		
+
+
 class CategoriesManagement:
 
 	def __init__(self):
@@ -179,7 +192,7 @@ class CategoriesManagement:
 			cursor.execute(self.sql)
 			self.list_of_dict = cursor.fetchall()
 
-			self.ordered_categories = []
+			self.ordered_categories = [" "]
 			for dicts in self.list_of_dict:
 				self.ordered_categories.append(dicts["category"])
 
@@ -201,7 +214,6 @@ if __name__ == "__main__":
 	#bill_test.modify_bill(x, ['popo', 'doolo', "20-01-2016", "09-09-2016", "110.20", 1, 'test_12'])
 	#print(bill_test.get_all_bills())
 	#print(bill_test.get_all_bills(sort = ("price", "ASC")))
-
 	#bill_test.verify_info(['toto', 'lolo', "14-12-2016", "11-11-2016", "253.20", 1, 'test_4'])
-
+	#bill_test.archive(x)
 	bill_test.close_connection()

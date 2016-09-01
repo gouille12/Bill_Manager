@@ -76,7 +76,13 @@ class InterfaceBill:
 		self.filtering.add_command(label = "À payer", command = lambda : self.update_bills(3))
 		self.filtering.add_command(label = "Payées", command = lambda : self.update_bills(4))
 		self.menu_bar.add_cascade(label = "Filtres", menu = self.filtering)
+		
+		self.options = tk.Menu(self.root, tearoff = 0)
+		self.options.add_command(label = "Archiver la sélection", command = self.command_archive)
+		self.menu_bar.add_cascade(label = "Options", menu = self.options)
+
 		self.root.config(menu = self.menu_bar)
+
 
 
 		self.treeview_main.bind("<Double-Button-1>", self.double_click_tree)
@@ -123,6 +129,7 @@ class InterfaceBill:
 	def toplevel_message(self, root, msg, title):
 
 		self.top_about = tk.Toplevel(root)
+		self.top_about.focus()
 		self.top_about.resizable(width = False, height = False)
 		self.x_about = self.width_screen*0.35
 		self.y_about = self.height_screen*0.3
@@ -134,11 +141,16 @@ class InterfaceBill:
 		self.canvas_background_about.create_text(self.width_root*0.15, self.height_root*0.1, text = msg, anchor = "center", fill = "white", justify = "center")
 		self.button_top_about = ttk.Button(self.top_about, text = "Fermer", command = self.top_about.destroy)
 		self.button_top_about.place(relx = 0.5, rely = 0.7, anchor = "center")
-		self.top_about.bind("<Escape>", lambda _: self.button_top_about.invoke())
+		self.top_about.bind("<Return>", lambda _: self.button_top_about.invoke())
 
+	def command_archive(self):
 
-
-
+		try:
+			self.id_bill_to_archive = self.bill_management.get_bill_id(self.select_item_tree(self.treeview_main))
+			self.bill_management.archive(self.id_bill_to_archive)
+		except TypeError:
+			self.toplevel_message(self.root, "Aucune sélection effectuée", "Erreur de saisie")
+		self.update_bills()
 
 
 	def command_button_del(self):
@@ -168,6 +180,7 @@ class InterfaceBill:
 		
 
 		self.top_add_bill = tk.Toplevel(self.root)
+		self.top_add_bill.focus()
 		self.x_add = self.width_screen*0.35
 		self.y_add = self.height_screen*0.2
 		self.top_add_bill.geometry("%dx%d+%d+%d" % (self.width_root*0.5, self.height_root*0.5, self.x_add, self.y_add))
@@ -286,6 +299,7 @@ class InterfaceBill:
 	def command_menu_categories(self):
 
 		self.top_menu_categories = tk.Toplevel(self.root)
+		self.top_menu_categories.focus()
 		self.x_categories, self.y_categories = self.width_screen*0.23, self.height_screen*0.15
 		self.top_menu_categories.geometry("%dx%d+%d+%d" % (self.width_root*0.45, self.height_root*0.7, self.x_categories, self.y_categories))
 		self.top_menu_categories.resizable(width = False, height = False)

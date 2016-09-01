@@ -1,0 +1,3 @@
+À l'aide du logiciel MySQL:
+
+Écrire dans la console du workbench: SELECT * FROM archives
