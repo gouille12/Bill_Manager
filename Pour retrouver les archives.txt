@@ -1,3 +1,7 @@
 À l'aide du logiciel MySQL:
-
 Écrire dans la console du workbench: SELECT * FROM archives
+
+Pour faire un back-up:
+Depuis l'écran principal du workbench
+Aller dans "Management"
+Aller dans "export"
