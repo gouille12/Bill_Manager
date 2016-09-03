@@ -6,7 +6,7 @@ __date__ = "01 septembre 2016"
 
 """
 **********PROJET PENDU**********
-BillManagerInterface.py : Fichier principal, responsable de toute l'interface graphique
+BillManager.py : Fichier principal, responsable de toute l'interface graphique
 						(InterfaceManager)
 DatabaseInteraction.py : Responsable de la gestion des éléments et des catégories dans la
 						base de données (BillsManagement, CategoriesManagement)
@@ -223,12 +223,12 @@ class CategoriesManagement:
 
 if __name__ == "__main__":
 
-	#test = CategoriesManagement()
+	test = CategoriesManagement()
 	#test.add_category('epicerie2')
 	#test.delete_category("epicerie2")
 	#print(test.get_all_categories())
 
-	#bill_test = BillsManagement()
+	bill_test = BillsManagement()
 	#bill_test.add_bill(["toto", "lolo", "14-06-2016", "11-11-2016", "253.20", 1, "test_4"])
 	#x = bill_test.get_bill_id(["toto", "lolo", "14-06-2016", "11-11-2016", "253.20", 1, "test_4"])	
 	#print(x)

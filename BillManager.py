@@ -6,7 +6,7 @@ __date__ = "01 septembre 2016"
 
 """
 **********PROJET PENDU**********
-BillManagerInterface.py : Fichier principal, responsable de toute l'interface graphique
+BillManager.py : Fichier principal, responsable de toute l'interface graphique
 						(InterfaceManager)
 DatabaseInteraction.py : Responsable de la gestion des éléments et des catégories dans la
 						base de données (BillsManagement, CategoriesManagement)
@@ -40,7 +40,7 @@ class InterfaceManager:
 		self.root.title("Organisateur personnel")
 		self.root.config(bg = "#121212")
 		self.canvas_background_main = tk.Canvas(self.root, width = self.width_root, height = self.height_root)
-		self.image_background = tk.PhotoImage(file = "Background.png")
+		self.image_background = tk.PhotoImage(file = "C:\\Users\\Cédric\\Documents\\Projets python - Documents autres\\Gestion de factures\\Background.png")
 		self.canvas_background_main.pack(expand = 1, fill = "both")
 		self.canvas_background_main.create_image(0, 0, image = self.image_background, anchor = "nw")
 
@@ -235,7 +235,7 @@ class InterfaceManager:
 		self.checkbutton_paid = tk.Checkbutton(self.frame_widgets_add, variable = self.paid, 
 												command = self.get_checkbutton, bg = self.color)
 		self.label_top_add_note = tk.Label(self.frame_widgets_add, text = "Notes :", bg = self.color)
-		self.text_top_add_note = tk.Text(self.frame_widgets_add, width = 20, height = 4)
+		self.text_top_add_note = tk.Text(self.frame_widgets_add, width = 20, height = 4, font = ("Arial", 10))
 
 		self.labels_top_add = [self.label_top_add_name, self.label_top_add_category,
 								self.label_top_add_init_date, self.label_top_add_due_date,
